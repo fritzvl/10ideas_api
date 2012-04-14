@@ -4,14 +4,25 @@ This is the 10ideas API Rails application for the masterofcode.com 10ideas appli
 
 == API methods
 POST /ideas.json - Create new idea
+
 GET /ideas/:id.json - Get the specific idea
+
 PUT /ideas/:id.json - Update the existing idea
+
 DELETE /ideas/:id.json - Update the existing idea
+
 PUT /ideas/:id/publish.json - Make idea public
+
 PUT /ideas/:id/vote.json - Vote for idea
+
 GET /ideas.json - Get my ideas for today
+
 GET /ideas/public.json - Get all public ideas for today
+
 GET /ideas/winners.json - Get the list of top 10 ideas
+
 GET /ideas/by_date.json?date=yyyy-mm-dd - Get my ideas by date
+
 GET /ideas/public_by_date.json?date=yyyy-mm-dd - Get all public ideas by date
+
 GET /ideas/winners_by_date.json?date=yyyy-mm-dd - Get the list of top 10 ideas
