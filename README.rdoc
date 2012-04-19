@@ -26,3 +26,7 @@ GET /ideas/by_date.json?date=yyyy-mm-dd - Get my ideas by date
 GET /ideas/public_by_date.json?date=yyyy-mm-dd - Get all public ideas by date
 
 GET /ideas/winners_by_date.json?date=yyyy-mm-dd - Get the list of top 10 ideas
+
+== User registration methods
+
+Comming soon
