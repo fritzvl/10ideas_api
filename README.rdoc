@@ -26,3 +26,16 @@ GET /ideas/by_date.json?date=yyyy-mm-dd - Get my ideas by date
 GET /ideas/public_by_date.json?date=yyyy-mm-dd - Get all public ideas by date
 
 GET /ideas/winners_by_date.json?date=yyyy-mm-dd - Get the list of top 10 ideas
+
+== Registartion methods
+
+POST /users - Register user, mandatory fields user[:email], user[:password]
+PUT /users - Update user, if you change password mandatory field is user[:current_password]
+
+== Authentication
+For all calls except registration user should be authenticated.Authentication is stateless, token-based.
+On registration you will get JSON {:authentication_token=>"some_token"}, you should save it and use in all calls like
+PUT /users, :user=>{some_fields},:auth_token=>"your token"
+
+==Response statuses
+In case of invalid request API will return status 422 - unprocessible entity

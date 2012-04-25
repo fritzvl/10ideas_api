@@ -20,7 +20,7 @@ require 'spec_helper'
 
 describe IdeasController do
   include Devise::TestHelpers
-  login_user
+  setup_user
 
   # This should return the minimal set of attributes required to create a valid
   # Idea. As you add validations to Idea, be sure to
@@ -36,27 +36,21 @@ describe IdeasController do
     {}
   end
 
-  it "should have a current_user" do
-    # note the fact that I removed the "validate_session" parameter if this was a scaffold-generated controller
-    subject.current_user.should_not be_nil
-  end
-
-
   describe "GET index" do
     it "assigns all ideas as @ideas" do
-      get :index, {:format => :json}
+      get :index, {:format => :json, :auth_token => @user.authentication_token}
       assigns(:ideas).should == Idea.current_ideas_for(subject.current_user)
     end
 
     it "responses with ideas in JSON format" do
       idea = Idea.create! valid_attributes
-      get :index, {:format => :json}
+      get :index, {:format => :json, :auth_token => @user.authentication_token}
       JSON.is_json?(response.body).should be_true
     end
 
     it "responses with today data only" do
       10.times { Fabricate(:user) }
-      get :index, {:format => :json}
+      get :index, {:format => :json, :auth_token => @user.authentication_token}
       assigns(:ideas).should == Idea.current_ideas_for(subject.current_user)
     end
 
@@ -66,8 +60,8 @@ describe IdeasController do
   describe "GET by_date" do
 
     it "responses by ideas for the specific date" do
-      idea=Fabricate(:idea, :user_id=>subject.current_user.id, :created_at=>Date.yesterday-1.day)
-      get :by_date, {:date=>(Date.yesterday-1.day).strftime}
+      idea=Fabricate(:idea, :user_id => @user.id, :created_at => Date.yesterday-1.day)
+      get :by_date, {:date => (Date.yesterday-1.day).strftime, :auth_token => @user.authentication_token}
       assigns(:ideas).should == [idea]
     end
 
@@ -76,13 +70,13 @@ describe IdeasController do
   describe "GET show" do
     it "assigns the requested idea as @idea" do
       idea = Idea.create! valid_attributes
-      get :show, {:id => idea.to_param}
+      get :show, {:id => idea.to_param, :auth_token => @user.authentication_token}
       assigns(:idea).should eq(idea)
     end
 
     it "responses with idea in JSON format" do
       idea = Idea.create! valid_attributes
-      get :show, {:id => idea.to_param, :format => :json}
+      get :show, {:id => idea.to_param, :format => :json, :auth_token => @user.authentication_token}
       JSON.is_json?(response.body).should be_true
     end
 
@@ -93,18 +87,18 @@ describe IdeasController do
     describe "with valid params" do
       it "creates a new Idea" do
         expect {
-          post :create, {:idea => valid_attributes}
+          post :create, {:idea => valid_attributes, :auth_token => @user.authentication_token}
         }.to change(Idea, :count).by(1)
       end
 
       it "assigns a newly created idea as @idea" do
-        post :create, {:idea => valid_attributes}
+        post :create, {:idea => valid_attributes, :auth_token => @user.authentication_token}
         assigns(:idea).should be_a(Idea)
         assigns(:idea).should be_persisted
       end
 
       it "responses with created idea in JSON format" do
-        post :create, {:idea => valid_attributes, :format => :json}
+        post :create, {:idea => valid_attributes, :format => :json, :auth_token => @user.authentication_token}
         response.should be_success
         JSON.is_json?(response.body).should be_true
       end
@@ -114,14 +108,14 @@ describe IdeasController do
       it "assigns a newly created but unsaved idea as @idea" do
         # Trigger the behavior that occurs when invalid params are submitted
         Idea.any_instance.stub(:save).and_return(false)
-        post :create, {:idea => {}}
+        post :create, {:idea => {}, :auth_token => @user.authentication_token}
         assigns(:idea).should be_a_new(Idea)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         Idea.any_instance.stub(:save).and_return(false)
-        post :create, {:idea => {}, :format => :json}
+        post :create, {:idea => {}, :format => :json, :auth_token => @user.authentication_token}
         response.should_not be_success
         response.status.should be 422
       end
@@ -137,18 +131,18 @@ describe IdeasController do
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
         Idea.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, {:id => idea.to_param, :idea => {'these' => 'params'}}
+        put :update, {:id => idea.to_param, :idea => {'these' => 'params'}, :auth_token => @user.authentication_token, :format => :json}
       end
 
       it "assigns the requested idea as @idea" do
         idea = Idea.create! valid_attributes
-        put :update, {:id => idea.to_param, :idea => valid_attributes}
+        put :update, {:id => idea.to_param, :idea => valid_attributes, :auth_token => @user.authentication_token, :format => :json}
         assigns(:idea).should eq(idea)
       end
 
       it "responses with updated idea in JSON format" do
         idea = Idea.create! valid_attributes
-        put :update, {:id => idea.to_param, :idea => valid_attributes, :format => :json}
+        put :update, {:id => idea.to_param, :idea => valid_attributes, :auth_token => @user.authentication_token, :format => :json}
         response.should be_success
         JSON.is_json?(response.body).should be_true
       end
@@ -159,7 +153,7 @@ describe IdeasController do
         idea = Idea.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Idea.any_instance.stub(:save).and_return(false)
-        put :update, {:id => idea.to_param, :idea => {}}
+        put :update, {:id => idea.to_param, :idea => {}, :auth_token => @user.authentication_token, }
         assigns(:idea).should eq(idea)
       end
 
@@ -167,7 +161,7 @@ describe IdeasController do
         idea = Idea.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Idea.any_instance.stub(:save).and_return(false)
-        put :update, {:id => idea.to_param, :idea => {}, :format => :json}
+        put :update, {:id => idea.to_param, :idea => {}, :auth_token => @user.authentication_token, :format => :json}
         response.should_not be_success
         response.status.should be 422
       end
@@ -178,19 +172,19 @@ describe IdeasController do
     it "destroys the requested idea" do
       idea = Idea.create! valid_attributes
       expect {
-        delete :destroy, {:id => idea.to_param, :format => :json}
+        delete :destroy, {:id => idea.to_param, :auth_token => @user.authentication_token, :format => :json}
       }.to change(Idea, :count).by(-1)
     end
 
     it "redirects to the ideas list" do
       idea = Idea.create! valid_attributes
-      delete :destroy, {:id => idea.to_param, :format => :json}
+      delete :destroy, {:id => idea.to_param, :auth_token => @user.authentication_token, :format => :json}
       response.should be_success
     end
 
     it "redirects to the ideas list" do
       idea = Idea.create! valid_attributes
-      delete :destroy, {:id => idea.to_param, :format => :json}
+      delete :destroy, {:id => idea.to_param, :auth_token => @user.authentication_token, :format => :json}
       JSON.is_json?(response.body).should be_true
     end
 

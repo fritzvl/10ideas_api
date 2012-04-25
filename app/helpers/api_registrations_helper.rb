@@ -1,0 +1,2 @@
+module ApiRegistrationsHelper
+end

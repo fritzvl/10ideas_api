@@ -1,5 +1,7 @@
 Api10ideas::Application.routes.draw do
-  devise_for :users
+
+  devise_for :users  , :controllers=>{ :registrations=>"api/registrations"}
+
   resources :ideas do
     member do
       put 'publish'
