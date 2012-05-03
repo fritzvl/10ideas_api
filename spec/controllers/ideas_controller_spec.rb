@@ -153,7 +153,7 @@ describe IdeasController do
         idea = Idea.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         Idea.any_instance.stub(:save).and_return(false)
-        put :update, {:id => idea.to_param, :idea => {}, :auth_token => @user.authentication_token, }
+        put :update, {:id => idea.to_param, :idea => {}, :auth_token => @user.authentication_token, :format => :json}
         assigns(:idea).should eq(idea)
       end
 
@@ -165,6 +165,42 @@ describe IdeasController do
         response.should_not be_success
         response.status.should be 422
       end
+    end
+  end
+
+  describe "PUT publish" do
+    describe "with valid params" do
+      it "changes idea state to public" do
+        idea = Idea.create! valid_attributes
+        Idea.any_instance.stub(:publish!).and_return(true)
+        put :publish, {:id => idea.to_param, :auth_token => @user.authentication_token, :format => :json}
+        response.should be_success
+        JSON.is_json?(response.body).should be_true
+      end
+    end
+  end
+
+  describe "PUT vote" do
+    describe "with valid params" do
+      it "vote for idea " do
+        owner=Fabricate(:user)
+        attributes=valid_attributes
+        attributes[:user_id]=owner.id
+        idea = Idea.create! attributes
+        put :vote, {:id => idea.to_param, :auth_token => @user.authentication_token, :format => :json}
+        response.should be_success
+        JSON.is_json?(response.body).should be_true
+      end
+
+      it "should not be able for own idea" do
+        attributes=valid_attributes
+        attributes[:user_id]=@user.id
+        idea = Idea.create! attributes
+        put :vote, {:id => idea.to_param, :auth_token => @user.authentication_token, :format => :json}
+        response.should_not be_success
+        JSON.is_json?(response.body).should be_true
+      end
+
     end
   end
 

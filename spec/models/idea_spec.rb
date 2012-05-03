@@ -30,5 +30,38 @@ describe Idea do
 
   end
 
+  describe 'idea publish' do
+
+    it "make idea public on demand" do
+      Fabricate(:user)
+      idea=Fabricate(:idea, :user_id => User.first.id, :created_at => Date.today)
+      idea.publish!
+      idea.should be_valid
+      idea.should be_public
+    end
+
+  end
+
+  describe 'vote for idea' do
+
+    it "vote for idea" do
+      owner=Fabricate(:user)
+      idea=Fabricate(:idea, :user_id => owner.id, :created_at => Date.today)
+      voter=Fabricate(:user)
+      idea.vote!(voter).should be_true
+      idea.should be_valid
+      idea.votes.include?(voter.id).should be_true
+    end
+
+    it "should not be able to vote for own idea" do
+      owner=Fabricate(:user)
+      idea=Fabricate(:idea, :user_id => owner.id, :created_at => Date.today)
+      idea.vote!(owner).should_not be_true
+      idea.should be_valid
+      idea.votes.should be_nil
+    end
+
+  end
+
 
 end

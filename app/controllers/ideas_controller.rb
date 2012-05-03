@@ -13,7 +13,7 @@ class IdeasController < ApplicationController
   end
 
   def by_date
-    @ideas = Idea.ideas_for_by_date(current_user,:created_at.gte => params[:date]).entries
+    @ideas = Idea.ideas_for_by_date(current_user, :created_at.gte => params[:date]).entries
     respond_with(@ideas) do |format|
       format.json { render json: @ideas }
     end
@@ -53,6 +53,30 @@ class IdeasController < ApplicationController
       end
     end
   end
+
+  # PUT /ideas/1/publish.json
+  def publish
+    @idea = Idea.find(params[:id])
+    respond_with(@idea) do |format|
+      if @idea.publish!
+        format.json { render json: @idea, status: :created, location: @idea }
+      else
+        format.json { render json: @idea.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def vote
+    @idea = Idea.find(params[:id])
+    respond_with(@idea) do |format|
+      if @idea.vote!(current_user)
+        format.json { render json: @idea, status: :created, location: @idea }
+      else
+        format.json { render json: @idea.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
 
   # DELETE /ideas/1
   # DELETE /ideas/1.json
