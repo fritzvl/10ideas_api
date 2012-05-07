@@ -2,6 +2,7 @@ class IdeasController < ApplicationController
   respond_to :json
 
   before_filter :authenticate_user!
+  skip_before_filter :verify_authenticity_token
 
   # GET /ideas
   # GET /ideas.json
