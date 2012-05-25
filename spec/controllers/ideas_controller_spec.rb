@@ -61,11 +61,23 @@ describe IdeasController do
 
     it "responses by ideas for the specific date" do
       idea=Fabricate(:idea, :user_id => @user.id, :created_at => Date.yesterday-1.day)
-      get :by_date, {:date => (Date.yesterday-1.day).strftime, :auth_token => @user.authentication_token}
+      get :by_date, {:date => (Date.yesterday-1.day).strftime, :auth_token => @user.authentication_token, :format=>:json}
       assigns(:ideas).should == [idea]
+      JSON.is_json?(response.body).should be_true
     end
 
   end
+
+  describe "GET actual" do
+
+      it "responses by the public ideas for today" do
+        idea=Fabricate(:idea, :user_id => @user.id, :created_at => Date.today, :public=>true)
+        get :actual, {:auth_token => @user.authentication_token, :format=>:json}
+        assigns(:ideas).should == [idea]
+        JSON.is_json?(response.body).should be_true
+      end
+
+    end
 
   describe "GET show" do
     it "assigns the requested idea as @idea" do

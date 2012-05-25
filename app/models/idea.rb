@@ -13,7 +13,7 @@ class Idea
 
   scope :current_ideas_for, ->(user) { all_of(:user_id => user.id, :created_at.gte => Time.parse(Date.today.to_s)) }
   scope :ideas_for_by_date, ->(user, date) { all_of(:user_id => user.id, :created_at => Time.parse(date.to_s)) }
-
+  scope :public_ideas_for_today, where(:public => true, :created_at => Date.today)
 
   def publish!
     update_attribute(:public, true)

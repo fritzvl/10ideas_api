@@ -20,6 +20,14 @@ class IdeasController < ApplicationController
     end
   end
 
+  def actual
+    @ideas = Idea.public_ideas_for_today.entries
+    respond_with(@ideas) do |format|
+      format.json { render json: @ideas }
+    end
+  end
+
+
   # GET /ideas/1
   # GET /ideas/1.json
   def show
