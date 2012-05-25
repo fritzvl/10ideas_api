@@ -2,6 +2,8 @@ class Api::SessionsController < Devise::SessionsController
 
   prepend_before_filter :require_no_authentication, :only => :create
   prepend_before_filter :allow_params_authentication!, :only => :create
+  skip_before_filter :verify_authenticity_token
+
 
   def create
     resource = warden.authenticate!(auth_options)
