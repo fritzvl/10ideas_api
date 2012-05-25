@@ -1,6 +1,6 @@
 Api10ideas::Application.routes.draw do
 
-  devise_for :users  , :controllers=>{ :registrations=>"api/registrations"}
+  devise_for :users  , :controllers=>{ :registrations=>"api/registrations", :sessions => "api/sessions"}
 
   resources :ideas do
     member do

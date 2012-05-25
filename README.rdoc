@@ -29,13 +29,19 @@ GET /ideas/winners_by_date.json?date=yyyy-mm-dd - Get the list of top 10 ideas
 
 == Registartion methods
 
-POST /users - Register user, mandatory fields user[:email], user[:password]
+POST /users - Register user, mandatory fields user[:email], user[:password], user[:password_confirmation]
 PUT /users - Update user, if you change password mandatory field is user[:current_password]
 
 == Authentication
 For all calls except registration user should be authenticated.Authentication is stateless, token-based.
 On registration you will get JSON {:authentication_token=>"some_token"}, you should save it and use in all calls like
+POST /users/sign_in, :user=>{:login,:password}
+
+== Update profile
 PUT /users, :user=>{some_fields},:auth_token=>"your token"
 
 ==Response statuses
 In case of invalid request API will return status 422 - unprocessible entity
+
+==Format
+all requests to the API should be made with .json format, requestiong data in json format
