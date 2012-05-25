@@ -9,6 +9,7 @@ Api10ideas::Application.routes.draw do
     end
     collection do
       get 'by_date' , :constraints => {:date => /\d\d\d\d-\d\d-\d\d/}
+      get 'public' , :action=>"actual" , :controller=>"ideas"
     end
   end
   # The priority is based upon order of creation:
