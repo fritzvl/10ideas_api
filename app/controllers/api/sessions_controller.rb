@@ -7,7 +7,7 @@ class Api::SessionsController < Devise::SessionsController
     resource = warden.authenticate!(auth_options)
     sign_in(resource_name, resource)
     respond_to do |format|
-      format.json { render :json => {:auth_token => resource.authentication_token} }
+      format.json { render :json => {:auth_token => resource.authentication_token, :user_id=>resource._id} }
     end
   end
 

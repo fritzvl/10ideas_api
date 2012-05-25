@@ -6,7 +6,7 @@ class Api::RegistrationsController < Devise::RegistrationsController
     if resource.save
       if resource.active_for_authentication?
         respond_to do |format|
-          format.json { render :json => {:auth_token => resource.authentication_token} }
+          format.json { render :json => {:auth_token => resource.authentication_token, :user_id=>resource._id} }
         end
       else
         respond_to do |format|
