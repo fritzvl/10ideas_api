@@ -41,6 +41,7 @@ class IdeasController < ApplicationController
   # POST /ideas.json
   def create
     @idea = Idea.new(params[:idea])
+    @idea.user=current_user
     respond_with(@idea) do |format|
       if @idea.save
         format.json { render json: @idea, status: :created, location: @idea }
