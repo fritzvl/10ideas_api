@@ -14,7 +14,7 @@ class IdeasController < ApplicationController
   end
 
   def by_date
-    @ideas = Idea.ideas_for_by_date(current_user, :created_at.gte => params[:date]).entries
+    @ideas = Idea.ideas_for_by_date(current_user,params[:date]).entries
     respond_with(@ideas) do |format|
       format.json { render json: @ideas }
     end
@@ -22,6 +22,27 @@ class IdeasController < ApplicationController
 
   def actual
     @ideas = Idea.public_ideas_for_today.entries
+    respond_with(@ideas) do |format|
+      format.json { render json: @ideas }
+    end
+  end
+
+  def public_by_date
+    @ideas = Idea.public_ideas_by_date(params[:date])
+    respond_with(@ideas) do |format|
+      format.json { render json: @ideas }
+    end
+  end
+
+  def winners
+    @ideas = Idea.winners_by_date(Date.today.to_s)
+    respond_with(@ideas) do |format|
+      format.json { render json: @ideas }
+    end
+  end
+
+  def winners_by_date
+    @ideas = Idea.winners_by_date(params[:date])
     respond_with(@ideas) do |format|
       format.json { render json: @ideas }
     end

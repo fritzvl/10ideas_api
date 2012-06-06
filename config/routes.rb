@@ -10,6 +10,9 @@ Api10ideas::Application.routes.draw do
     collection do
       get 'by_date' , :constraints => {:date => /\d\d\d\d-\d\d-\d\d/}
       get 'public' , :action=>"actual" , :controller=>"ideas"
+      get 'public_by_date' , :constraints => {:date => /\d\d\d\d-\d\d-\d\d/}
+      get 'winners'
+      get 'winners_by_date' , :constraints => {:date => /\d\d\d\d-\d\d-\d\d/}
     end
   end
   # The priority is based upon order of creation:

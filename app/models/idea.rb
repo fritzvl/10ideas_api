@@ -5,15 +5,20 @@ class Idea
   field :essential, :type => String
   field :public, :type => Boolean
   field :votes, :type => Array
+  field :score, :type => Integer
 
   belongs_to :user
 
 
   validates_presence_of :essential
 
-  scope :current_ideas_for, ->(user) { all_of(:user_id => user.id, :created_at.gte => Time.parse(Date.today.to_s)) }
-  scope :ideas_for_by_date, ->(user, date) { all_of(:user_id => user.id, :created_at => Time.parse(date.to_s)) }
-  scope :public_ideas_for_today, all_of(:public => true, :created_at.gte => Time.parse(Date.today.to_s),:created_at.lt => Time.parse((Date.today+1.day).to_s))
+  scope :current_ideas_for, ->(user) { all_of(:user_id => user.id, :created_at.gte => Date.today, :created_at.lt => (Date.today+1.day)) }
+  scope :ideas_for_by_date, ->(user, date) { all_of(:user_id => user.id, :created_at.gte => Date.parse(date), :created_at.lt => (Date.parse(date)+1.day)) }
+  scope :public_ideas_for_today, all_of(:public => true, :created_at.gte => Date.today, :created_at.lt => (Date.today+1.day))
+  scope :public_ideas_by_date, ->(date) { all_of(:public => true, :created_at.gte => Date.parse(date), :created_at.lt => (Date.parse(date)+1.day)) }
+  scope :winners_by_date, ->(date) {
+    all_of(:public => true, :created_at.gte => Date.parse(date), :created_at.lt => (Date.parse(date)+1.day)).desc(:score).limit(3)
+  }
 
   def publish!
     update_attribute(:public, true)
@@ -26,6 +31,8 @@ class Idea
       else
         self.votes=[user.id]
       end
+      self.score||=0
+      self.score+=1
       save
     else
       false
