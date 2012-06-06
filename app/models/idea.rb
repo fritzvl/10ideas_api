@@ -17,7 +17,7 @@ class Idea
   scope :public_ideas_for_today, all_of(:public => true, :created_at.gte => Date.today, :created_at.lt => (Date.today+1.day))
   scope :public_ideas_by_date, ->(date) { all_of(:public => true, :created_at.gte => Date.parse(date), :created_at.lt => (Date.parse(date)+1.day)) }
   scope :winners_by_date, ->(date) {
-    all_of(:public => true, :created_at.gte => Date.parse(date), :created_at.lt => (Date.parse(date)+1.day)).desc(:score).limit(3)
+    all_of(:public => true,:score.gt=>0 ,:created_at.gte => Date.parse(date), :created_at.lt => (Date.parse(date)+1.day)).desc(:score).limit(3)
   }
 
   def publish!
